@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>แบบรายงานผลการเรียน</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
+        @page {
+            size: A4;
+            margin: 0.5in; 
+        }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 10pt; /* (ตามที่คุณครูปรับล่าสุด) */
+            line-height: 1.4; 
+        }
+
+        /* (CSS ส่วนหัวและข้อมูล) */
+        .header-table { width: 100%; border: none; margin-bottom: 5px; }
+        .header-table .logo { width: 15%; text-align: left; vertical-align: top; }
+        .header-table .logo img { width: 70px; }
+        .header-table .title { width: 85%; text-align: center; vertical-align: middle; }
+        .header-table h1 { font-size: 16pt; margin: 0; }
+        .header-table h2 { font-size: 14pt; margin: 0; }
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px;}
+        .info-table td { border: 0px solid #000; padding: 2px; }
+        
+        /* (CSS ตารางหลัก) */
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; 
+        }
+        .main-table th, .main-table td {
+            border: 1px solid #000;
+            padding: 4px; 
+            text-align: left;
+            vertical-align: top; 
+            word-wrap: break-word; 
+        }
+        .main-table th {
+            background-color: #dddcdc; /* (ตามที่คุณครูปรับล่าสุด) */
+            text-align: center;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+        .main-table td { font-weight: 400; }
+        
+        /* --- นี่คือส่วนที่แก้ไข (ทำให้ CSS เฉพาะเจาะจงมากขึ้น) --- */
+        .main-table .text-center { text-align: center; }
+        .main-table .bg-yellow { background-color: #fefee0; }
+        /* ---------------------------------------------------- */
+        
+        .col-1 { width: 30%; }
+        .col-2 { width: 12%; }
+        .col-3 { width: 12%; }
+        .col-4 { width: 12%; }
+        .col-5 { width: 34%; }
+        
+        /* (CSS ส่วนท้าย) */
+        .footer-table { width: 100%; border: none; margin-top: 15px; } 
+        .footer-left { width: 50%; vertical-align: top; }
+        .footer-right { width: 50%; vertical-align: top; text-align: center; }
+        .activity-box { border: 1px solid #000; padding: 5px; margin-bottom: 5px; }
+        .activity-box table { width: 100%; border-collapse: collapse; }
+        .activity-box td { border: none; padding: 2px; }
+        .checkbox { display: inline-block; width: 12px; height: 12px; border: 1px solid #000; margin-right: 5px; }
+        .signature-box { margin-top: 20px; } 
+        .signature-line { border-bottom: 1px dotted #000; margin: 0 20px; height: 20px; }
+        .page-break { page-break-before: always; }
+    </style>
+</head>
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td class="logo"><img src="logo.png" alt="Logo"></td>
+            <td class="title">
+                <h2>แบบรายงานผลการเรียน ภาคเรียนที่ 1 ปีการศึกษา {{ student_data.school_year }}</h2>
+                <h3><strong>โรงเรียนเทศบาลวัดพรหมจริยาวาส สำนักการศึกษา เทศบาลนครนครสวรรค์ </strong></h3>
+            </td>
+        </tr>
+    </table>
+    
+    <table class="info-table">
+        <tr>
+            <td><strong>เลขประจำตัว</strong> {{ student_data.id }}</td>
+            <td><strong>ชื่อ-สกุล</strong> {{ student_data.name }}</td>
+            <td><strong>ชั้นประถมศึกษาปีที่</strong> {{ student_data.class_level }}</td>
+            <td><strong>เลขที่</strong> {{ student_data.class_number }}</td>
+        </tr>
+    </table>
+    
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th class="col-1">ความสามารถชั้นปี</th>
+                <th class="col-2">ระดับ<br>ความสามารถ<br>ที่คาดหวัง</th>
+                <th class="col-3">ระดับ<br>ความสามารถ<br>ที่ได้</th>
+                <th class="col-4">พัฒนาการ</th>
+                <th class="col-5">คำอธิบายพฤติกรรม</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comp in student_data.competencies[:6] %}
+            <tr>
+                <td>{{ comp.id }}. {{ comp.name | safe }}</td>
+                <td class="text-center">{{ comp.expected_level }}</td>
+                <td class="text-center bg-yellow">{{ comp.level }}</td>
+                <td class="text-center">{{ comp.development }}</td>
+                <td>{{ comp.description | safe | replace('นักเรียน', student_data.name) }}</td>
+            </tr>
+            {% endfor %} </tbody>
+    </table>
+
+    <div class="page-break"></div>
+    
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th class="col-1">ความสามารถชั้นปี</th>
+                <th class="col-2">ระดับ<br>ความสามารถ<br>ที่คาดหวัง</th>
+                <th class="col-3">ระดับ<br>ความสามารถ<br>ที่ได้</th>
+                <th class="col-4">พัฒนาการ</th>
+                <th class="col-5">คำอธิบายพฤติกรรม</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comp in student_data.competencies[6:] %}
+            <tr>
+                <td>{{ comp.id }}. {{ comp.name | safe }}</td>
+                <td class="text-center">{{ comp.expected_level }}</td>
+                <td class="text-center bg-yellow">{{ comp.level }}</td>
+                <td class="text-center">{{ comp.development }}</td>
+                <td>{{ comp.description | safe | replace('นักเรียน', student_data.name) }}</td>
+            </tr>
+            {% endfor %} </tbody>
+    </table>
+    
+    <table class="footer-table">
+        <tr>
+            <td class="footer-left">
+                <div class="activity-box">
+                    <strong>กิจกรรมพัฒนาผู้เรียน</strong>
+                    <table></table>
+                    ผลการประเมิน: <strong>{{ student_data.activities_result }}</strong>
+                </div>
+                <div class="activity-box">
+                    <strong>คุณลักษณะอันพึงประสงค์</strong>
+                    <table></table>
+                    ผลการประเมิน: <strong>{{ student_data.characteristics_result }}</strong>
+                </div>
+            </td>
+            <td class="footer-right">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    (......................................................)
+                    <br>ครูประจำชั้น
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    ( นายสุนทร ทวีการไถ )
+                    <br>ผู้อำนวยการสถานศึกษา<br>
+                    โรงเรียนเทศบาลวัดพรหมจริยาวาส
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
